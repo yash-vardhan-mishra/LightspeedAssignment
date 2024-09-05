@@ -1,11 +1,32 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import Constants from "expo-constants";
 
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from "react";
+import { useFonts } from "expo-font";
+import OrderContainer from "./containers/OrderContainer/OrderContainer";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+
+SplashScreen.preventAutoHideAsync()
+
 function App() {
+  const [loaded, error] = useFonts({
+    'Roboto-Bold': require('./assets/fonts/Roboto-Bold.otf'),
+    'Roboto-Regular': require('./assets/fonts/Roboto-Regular.otf'),
+    'Inter-Regular': require('./assets/fonts/Inter-Regular.otf'),
+    'Inter-Bold': require('./assets/fonts/Inter-Bold.otf'),
+  });
+
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded]);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-    </View>
+    <SafeAreaProvider>
+      <OrderContainer />
+    </SafeAreaProvider>
   );
 }
 
@@ -15,13 +36,5 @@ if (Constants.expoConfig?.extra?.storybookEnabled === "true") {
   AppEntryPoint = require("./.ondevice").default;
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-});
 
 export default AppEntryPoint;
