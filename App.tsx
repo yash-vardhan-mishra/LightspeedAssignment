@@ -20,6 +20,8 @@ function App() {
     'Roboto-Regular': require('./assets/fonts/Roboto-Regular.otf'),
     'Inter-Regular': require('./assets/fonts/Inter-Regular.otf'),
     'Inter-Bold': require('./assets/fonts/Inter-Bold.otf'),
+    'Inter-Italic': require('./assets/fonts/Inter-Italic.otf'),
+    'Inter-BoldItalic': require('./assets/fonts/Inter-BoldItalic.otf'),
   });
 
   useEffect(() => {

@@ -1,3 +1,4 @@
+// internal js function to format the number to currency
 export const formatToNzd = (value: number): string => {
     return new Intl.NumberFormat('en-NZ', {
       style: 'currency',

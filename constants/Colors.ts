@@ -4,5 +4,5 @@ export default {
     royalBlue: '#2E61DE',
     white: '#ffffff',
     gainsboro: '#E1DCD7',
-    lightGray: '#D3D3D3'
+    lightGray: '#D3D3D3',
 }

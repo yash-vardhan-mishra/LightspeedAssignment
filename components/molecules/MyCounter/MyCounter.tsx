@@ -16,11 +16,18 @@ const MyCounter = ({ count, increaseCount, decreaseCount }: CounterProps) => {
     const textProps: Partial<CustomTextProps> = {
         weight: '700',
         color: Colors.outerSpace
-    }
+    };
+
+    // Prevent count from going negative
+    const handleDecrease = () => {
+        if (count > 0) {
+            decreaseCount();
+        }
+    };
 
     return (
         <View style={styles.container}>
-            <Pressable hitSlop={customHitSlop} style={styles.pressableText} onPress={decreaseCount}>
+            <Pressable hitSlop={customHitSlop} style={styles.pressableText} onPress={handleDecrease}>
                 <MyText {...textProps}>-</MyText>
             </Pressable>
             <View style={styles.countContainer}>

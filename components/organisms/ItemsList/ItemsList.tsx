@@ -17,9 +17,10 @@ interface ItemsListProps {
     increaseCount: (id: number) => void;
     decreaseCount: (id: number) => void;
     totalPrice: number;
+    renderEmptyListComponent: React.ReactElement; 
 }
 
-const ItemsList = ({ items, increaseCount, decreaseCount, totalPrice }: ItemsListProps) => {
+const ItemsList = ({ items, increaseCount, decreaseCount, totalPrice, renderEmptyListComponent }: ItemsListProps) => {
     return (
         <View style={styles.listContainer}>
             <FlatList
@@ -37,6 +38,7 @@ const ItemsList = ({ items, increaseCount, decreaseCount, totalPrice }: ItemsLis
                     />
                 )}
                 keyExtractor={(item) => item.id.toString()}
+                ListEmptyComponent={renderEmptyListComponent}
             />
 
             <View style={styles.totalContainer}>

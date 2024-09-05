@@ -9,6 +9,7 @@ import styles from "./OrderContainer.styles";
 import { fetchOrderData } from "../../services/Orders";
 import { itemRowTotalWidth } from "../../constants/dimensions";
 import { debounce } from "lodash";
+import MyText from "../../components/atoms/MyText/MyText";
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
 
@@ -86,6 +87,13 @@ const OrderContainer = () => {
         []
     );
 
+    // Memoized empty list component
+    const renderEmptyListComponent = useMemo(() => (
+        <View style={styles.emptyListComponent}>
+            <MyText style={styles.emptyListText}>Unable to fetch the data</MyText>
+            <MyButton text="Fetch the items again" onPress={handleNewOrder} />
+        </View>
+    ), [handleNewOrder]);
 
     return (
         <View style={[styles.container, { paddingBottom: insets.bottom }]}>
@@ -99,6 +107,7 @@ const OrderContainer = () => {
                     increaseCount={increaseCount}
                     decreaseCount={decreaseCount}
                     totalPrice={totalPrice}
+                    renderEmptyListComponent={renderEmptyListComponent}
                 />
             }
         </View>

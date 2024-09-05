@@ -6,7 +6,7 @@ import MyCounter from "../MyCounter/MyCounter";
 import { formatToNzd } from "../../../utils";
 import styles from "./ItemsRow.styles";
 
-interface ItemsRowProps {
+export interface ItemsRowProps {
     itemName: string;
     itemPrice: number;
     count: number;
