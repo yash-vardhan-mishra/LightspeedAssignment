@@ -1,7 +1,5 @@
 import { StyleSheet } from "react-native";
-import { SCREEN_WIDTH } from "../../../constants/dimensions";
-
-const totalWidth = SCREEN_WIDTH - 32
+import { itemRowTotalWidth } from "../../../constants/dimensions";
 
 const styles = StyleSheet.create({
     container: {
@@ -11,9 +9,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 16
     },
-    itemLabelContainer: { width: totalWidth * 0.4 },
-    itemCounterContainer: { width: totalWidth * 0.35, alignItems: 'center' },
-    itemPriceContainer: { width: totalWidth * 0.25, alignItems: 'flex-end' }
+    itemLabelContainer: { width: itemRowTotalWidth * 0.4 },
+    itemCounterContainer: { width: itemRowTotalWidth * 0.35, alignItems: 'center' },
+    itemPriceContainer: { width: itemRowTotalWidth * 0.25, alignItems: 'flex-end' }
 });
 
 export default styles

@@ -1,69 +1,107 @@
-import React, { useState } from "react";
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import ItemsList from "../../components/organisms/ItemsList/ItemsList";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { Alert, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { LinearGradient } from 'expo-linear-gradient';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
+import ItemsList, { Item } from "../../components/organisms/ItemsList/ItemsList";
 import { MyButton } from "../../components/molecules/MyButton/MyButton";
 import styles from "./OrderContainer.styles";
+import { fetchOrderData } from "../../services/Orders";
+import { itemRowTotalWidth } from "../../constants/dimensions";
+import { debounce } from "lodash";
 
-const initialItems = [
-    { id: 1, name: "Coconut Dahl", price: 14.0, count: 1 },
-    { id: 2, name: "Gesh Bowl", price: 13.0, count: 1 },
-    { id: 3, name: "Pavlova", price: 10.0, count: 1 },
-    { id: 4, name: "Latte", price: 8.0, count: 1 },
-    { id: 5, name: "Cappuccino", price: 8.0, count: 1 },
-    { id: 6, name: "Brew", price: 8.0, count: 1 },
-    { id: 7, name: "Brew2", price: 8.0, count: 1 },
-    { id: 8, name: "Brew3", price: 8.0, count: 1 },
-    { id: 9, name: "Brew4", price: 8.0, count: 1 },
-    { id: 10, name: "Brew5", price: 8.0, count: 1 },
-    { id: 11, name: "Brew6", price: 8.0, count: 1 },
-    { id: 12, name: "Brew7", price: 8.0, count: 1 },
-    { id: 13, name: "Brew8", price: 8.0, count: 1 },
-];
+const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
 
 const OrderContainer = () => {
-    const [items, setItems] = useState(initialItems);
+    const insets = useSafeAreaInsets();
+    const [items, setItems] = useState<Item[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const increaseCount = (id: number) => {
-        setItems((prevItems) =>
-            prevItems.map((item) =>
-                item.id === id && item.count < 99 ? { ...item, count: item.count + 1 } : item
+    // use debounce in fetchOrderData
+    const getOrderData = useCallback(
+        debounce(async () => {
+            try {
+                const res = await fetchOrderData();
+                if (Array.isArray(res) && res.length) {
+                    const orderData = res.map(item => ({ ...item, count: 0 }));
+                    setItems(orderData);
+                }
+            } catch {
+                Alert.alert('Error', 'Error fetching data');
+            } finally {
+                setLoading(false);
+            }
+        }, 1000),
+        []
+    );
+
+    useEffect(() => {
+        setLoading(true);
+        getOrderData();
+    }, [getOrderData]);
+
+    // memoized the increase count function
+    const increaseCount = useCallback((id: number) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
+                item.id === id && item.count < 99
+                    ? { ...item, count: item.count + 1 }
+                    : item
             )
         );
-    };
+    }, []);
 
-    const decreaseCount = (id: number) => {
-        setItems((prevItems) =>
-            prevItems.map((item) =>
+    // memoized the decrease count function
+    const decreaseCount = useCallback((id: number) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
                 item.id === id && item.count > 0
                     ? { ...item, count: item.count - 1 }
                     : item
             )
         );
-    };
+    }, []);
 
-    const calculateTotalPrice = () => {
-        return items.reduce((acc, item) => acc + item.price * item.count, 0);
-    };
+    // memoized the total price
+    const totalPrice = useMemo(
+        () => items.reduce((acc, item) => acc + item.price * item.count, 0),
+        [items]
+    );
 
-    const handleNewOrder = () => {
-        // Handle the new order logic here
-        console.log("New Order placed!");
-    };
+    const handleNewOrder = useCallback(() => {
+        setLoading(true);
+        setItems([]);
+        getOrderData();
+    }, [getOrderData]);
+
+    const renderShimmer = useCallback(
+        (itm: number) => (
+            <ShimmerPlaceholder
+                key={itm}
+                width={itemRowTotalWidth}
+                height={36}
+                style={styles.shimmerStyle}
+            />
+        ),
+        []
+    );
+
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.buttonContainer}>
-                <MyButton text='New order' onPress={() => console.log('this happened')} />
-            </View>
-            <ItemsList
-                items={items}
-                increaseCount={increaseCount}
-                decreaseCount={decreaseCount}
-                totalPrice={calculateTotalPrice()}
-            //   onNewOrder={handleNewOrder}
-            />
-        </SafeAreaView>
+        <View style={[styles.container, { paddingBottom: insets.bottom }]}>
+            <MyButton disabled={loading} onPress={handleNewOrder} style={styles.buttonContainer} text='New order' />
+            {loading ?
+                <View style={styles.shimmerContainer}>
+                    {Array.from({ length: 4 }, (_, idx) => renderShimmer(idx))}
+                </View>
+                : <ItemsList
+                    items={items}
+                    increaseCount={increaseCount}
+                    decreaseCount={decreaseCount}
+                    totalPrice={totalPrice}
+                />
+            }
+        </View>
     );
 };
 

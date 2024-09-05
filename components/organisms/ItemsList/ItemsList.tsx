@@ -3,10 +3,9 @@ import { View, FlatList } from "react-native";
 import MyText from "../../atoms/MyText/MyText";
 import ItemsRow from "../../molecules/ItemsRow/ItemsRow";
 import { formatToNzd } from "../../../utils";
-import { SCREEN_HEIGHT } from "../../../constants/dimensions";
 import styles from "./ItemsList.styles";
 
-interface Item {
+export interface Item {
     id: number;
     name: string;
     price: number;
@@ -22,11 +21,11 @@ interface ItemsListProps {
 
 const ItemsList = ({ items, increaseCount, decreaseCount, totalPrice }: ItemsListProps) => {
     return (
-        <View>
+        <View style={styles.listContainer}>
             <FlatList
                 showsVerticalScrollIndicator={false}
                 data={items}
-                style={{ paddingBottom: 12, maxHeight: 0.8 * SCREEN_HEIGHT }}
+                style={styles.flatlist}
                 renderItem={({ item }) => (
                     <ItemsRow
                         key={item.id}

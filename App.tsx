@@ -1,13 +1,18 @@
-import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Constants from "expo-constants";
 
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from "react";
 import { useFonts } from "expo-font";
 import OrderContainer from "./containers/OrderContainer/OrderContainer";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import HomeContainer from "./containers/HomeContainer/HomeContainer";
+
 
 SplashScreen.preventAutoHideAsync()
+
+const Stack = createNativeStackNavigator();
 
 function App() {
   const [loaded, error] = useFonts({
@@ -25,7 +30,16 @@ function App() {
 
   return (
     <SafeAreaProvider>
-      <OrderContainer />
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="HomeScreen"
+            component={HomeContainer}
+            options={{ title: 'Welcome', headerShown: false }}
+          />
+          <Stack.Screen name="OrderScreen" options={{ title: 'Order Screen' }} component={OrderContainer} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </SafeAreaProvider>
   );
 }
