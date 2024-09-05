@@ -1,44 +1,31 @@
-
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
-import { CustomTextProps } from '../components/atoms/MyText/MyText';
+import { render, fireEvent } from '@testing-library/react-native';
 import { Colors } from '../constants';
 import { MyButton } from '../components/molecules/MyButton/MyButton';
 import { Text } from 'react-native';
 
-const MyTextMock = ({ children, ...props }: CustomTextProps) => {
-    // Render the children as text
+const MyTextMock = ({ children, ...props }: any) => {
     return <Text {...props}>{children}</Text>;
 };
 
-jest.mock('../components/atoms/MyText/MyText.tsx', () => ({
+jest.mock('../components/atoms/MyText/MyText', () => ({
     __esModule: true,
     default: MyTextMock,
-    displayName: 'MyText'
+    displayName: 'MyText',
 }));
 
 describe('MyButton Component', () => {
-    describe('MyButton Component', () => {
-        it('renders correctly with default props', async () => {
-            const onPressMock = jest.fn();
-            const { getByTestId, getByText, debug } = render(<MyButton onPress={onPressMock} text="Click me" />);
+    //CASE#1
+    it('renders correctly with default props', () => {
+        const onPressMock = jest.fn();
+        const { getByTestId, getByText } = render(<MyButton onPress={onPressMock} text="Click me" />);
 
-            const button = getByTestId('my-button');
-
-            expect(button).toBeTruthy();
-
-            await waitFor(() => getByText('Click me'));
-
-            const text = getByText('Click me')
-
-            expect(text).toBeTruthy(); // Check if the text exists
-
-            // Debug the component structure
-            debug();
-        });
+        const button = getByTestId('my-button');
+        expect(button).toBeTruthy();
+        expect(getByText('Click me')).toBeTruthy();
     });
 
-
+    //CASE#2
     it('calls onPress when pressed', () => {
         const onPressMock = jest.fn();
         const { getByTestId } = render(<MyButton onPress={onPressMock} text="Press me" />);
@@ -48,8 +35,9 @@ describe('MyButton Component', () => {
         expect(onPressMock).toHaveBeenCalledTimes(1);
     });
 
+    //CASE#3
     it('applies custom textProps', () => {
-        const { getByTestId, getByText } = render(
+        const { getByText } = render(
             <MyButton
                 onPress={() => { }}
                 text="Custom Text"
@@ -57,21 +45,21 @@ describe('MyButton Component', () => {
             />
         );
 
-        const button = getByTestId('my-button');
         const text = getByText('Custom Text');
-
         expect(text.props.color).toBe('red');
         expect(text.props.weight).toBe('400');
     });
 
+    //CASE#4
     it('applies default text color and weight when not provided', () => {
         const { getByTestId } = render(<MyButton onPress={() => { }} text="Default Props" />);
-    
-        const button = getByTestId('my-button');
-        expect(button.props.children[0].props.color).toBe(Colors.white);
-        expect(button.props.children[0].props.weight).toBe('700');
+
+        const text = getByTestId('my-text');
+        expect(text.props.color).toBe(Colors.white);
+        expect(text.props.weight).toBe('700');
     });
 
+    //CASE#5
     it('applies custom style to TouchableOpacity', () => {
         const customStyle = { backgroundColor: 'red' };
         const { getByTestId } = render(
@@ -82,12 +70,18 @@ describe('MyButton Component', () => {
         expect(button.props.style).toEqual(expect.objectContaining(customStyle));
     });
 
-    it('passes additional TouchableOpacityProps', () => {
+    //CASE#6
+    it('passes additional TouchableOpacityProps and handles disabled state', () => {
+        const onPressMock = jest.fn();
         const { getByTestId } = render(
-            <MyButton onPress={() => { }} text="Disabled Button" disabled={true} />
+            <MyButton onPress={onPressMock} text="Disabled Button" disabled={true} />
         );
 
         const button = getByTestId('my-button');
         expect(button.props.accessibilityState.disabled).toBe(true);
+
+        // ensure onPress is not called when disabled
+        fireEvent.press(button);
+        expect(onPressMock).not.toHaveBeenCalled();
     });
 });

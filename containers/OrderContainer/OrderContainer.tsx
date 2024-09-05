@@ -24,6 +24,7 @@ const OrderContainer = () => {
             try {
                 const res = await fetchOrderData();
                 if (Array.isArray(res) && res.length) {
+                    // added the initial count to 0
                     const orderData = res.map(item => ({ ...item, count: 0 }));
                     setItems(orderData);
                 }

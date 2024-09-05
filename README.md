@@ -1,57 +1,50 @@
-![image](https://user-images.githubusercontent.com/3481514/145904252-92e3dc1e-591f-410f-88a1-b4250f4ba6f2.png)
 
-# getting started
+# LightspeedAssignment
 
-```sh
-npx create-expo-app --template expo-template-storybook AwesomeStorybook
-```
+This project demonstrates an order screen built using the Storybook template for Expo. The project follows the principles of Atomic Design and leverages Storybook for component development and testing. The UI has been tested on an iPhone 15 emulator running iOS 17.5 and Android Pixel 5 with API 34. Additionally, a shimmer placeholder is used during API calls to enhance the user experience by displaying a loading animation until data is fully fetched.
 
-or
+## Running the App
 
-```sh
-yarn create expo-app --template expo-template-storybook AwesomeStorybook
-```
-
-# app
+To start the Expo development server, use:
 
 ```sh
 yarn start
 ```
 
-# Ondevice
+## Storybook - On-Device
 
-In this template you can now run `yarn storybook` to start ondevice storybook or `yarn start` to start your expo app.
-This works via env variables and expo constants.
+This template integrates **Storybook** for on-device component development and testing. To start Storybook on your device or emulator, use the following commands:
 
 ```sh
-# either
+# Start Storybook on any device/emulator
 yarn storybook
 
-# ios
+# For iOS
 yarn storybook:ios
 
-# android
+# For Android
 yarn storybook:android
 ```
+## Project Structure
 
-If you add new stories on the native (ondevice version) you either need to have the watcher running or run the stories loader
+This project follows the **Atomic Design** methodology, which breaks down the UI into smaller, reusable components:
 
-To update the stories one time
+- **Atoms:** Basic UI element that cannot be broken down into subcomponents  - Text, 
+- **Molecules:** Combinations of atoms that work together - Items row, button with text, counter.
+- **Organisms:** Larger, more complex components made up of atoms and molecules - Item list.
+- **Containers:** Screens combining organisms with business logic.
 
-```sh
-yarn storybook-generate
-```
+## Shimmer Placeholder
 
-# Web
+During API calls, a **shimmer effect** is used as a placeholder for loading content. This provides users with a visual indication that data is being fetched and improves the overall user experience.
 
-Start react native web storybook:
+## Tested Devices
 
-```
-yarn storybook:web
-```
+The order screen and its components have been tested in the following environments:
 
-build react native web storybook:
+- **iPhone 15 Emulator** running **iOS 17.5**
+- **Android Pixel 5 Emulator** running **API 34**
 
-```sh
-yarn build-storybook
-```
+## Conclusion
+
+This project showcases the power of component-based development using **Storybook** within Expo projects, following **Atomic Design** principles. With its responsive design, loading placeholders, and fully tested UI across iOS and Android, it provides a solid foundation for developing scalable and maintainable apps.
