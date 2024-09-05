@@ -6,7 +6,7 @@ import styles from "./MyCounter.styles";
 
 const customHitSlop = { top: 8, right: 12, bottom: 8, left: 12 };
 
-interface CounterProps {
+export interface CounterProps {
     count: number;
     increaseCount: () => void;
     decreaseCount: () => void;

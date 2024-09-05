@@ -39,7 +39,7 @@ const MyText: React.FC<CustomTextProps & TextProps> = ({
     color,
     style,
     ...props
-}) => {
+}) => { 
     const [loaded] = useFonts({
         'Roboto-Bold': require('../../../assets/fonts/Roboto-Bold.otf'),
         'Roboto-Regular': require('../../../assets/fonts/Roboto-Regular.otf'),
@@ -57,6 +57,7 @@ const MyText: React.FC<CustomTextProps & TextProps> = ({
 
     return (
         <Text
+            testID="my-text"
             style={[
                 {
                     fontFamily,

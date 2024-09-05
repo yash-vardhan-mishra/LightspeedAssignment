@@ -8,14 +8,28 @@ interface MyButtonProps {
   onPress: () => void;
   text: string;
   textProps?: Partial<CustomTextProps>;
+  testID?: string;
 }
 
-export const MyButton: React.FC<MyButtonProps & TouchableOpacityProps> = ({ onPress, text, textProps = {}, style, ...props }) => {
+export const MyButton: React.FC<MyButtonProps & TouchableOpacityProps> = ({
+  onPress,
+  text,
+  textProps = {},
+  style,
+  testID,
+  ...props
+}) => {
   const { color = Colors.white, weight = '700', ...restTextProps } = textProps;
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress} {...props}>
-      <MyText color={color} weight={weight} {...restTextProps}>{text}</MyText>
+    <TouchableOpacity
+      accessibilityRole="button"
+      style={[styles.container, style]}
+      onPress={onPress}
+      testID="my-button"
+      accessible={true}
+      {...props}
+    >
+      <MyText testID="my-text" color={color} weight={weight} {...restTextProps}>{text}</MyText>
     </TouchableOpacity>
   );
 };
-
