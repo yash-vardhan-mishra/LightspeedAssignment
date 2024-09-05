@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Alert, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -18,32 +18,26 @@ const OrderContainer = () => {
     const [items, setItems] = useState<Item[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // use debounce in fetchOrderData
-    const getOrderData = useCallback(
-        debounce(async () => {
-            try {
-                const res = await fetchOrderData();
-                if (Array.isArray(res) && res.length) {
-                    // added the initial count to 0
-                    const orderData = res.map(item => ({ ...item, count: 0 }));
-                    setItems(orderData);
-                }
-            } catch {
-                Alert.alert('Error', 'Error fetching data');
-            } finally {
-                setLoading(false);
+    const getOrderData = debounce(async () => {
+        try {
+            const res = await fetchOrderData();
+            if (Array.isArray(res) && res.length) {
+                const orderData = res.map(item => ({ ...item, count: 0 }));
+                setItems(orderData);
             }
-        }, 1000),
-        []
-    );
+        } catch {
+            Alert.alert('Error', 'Error fetching data');
+        } finally {
+            setLoading(false);
+        }
+    }, 1000);
 
     useEffect(() => {
         setLoading(true);
         getOrderData();
-    }, [getOrderData]);
+    }, []);
 
-    // memoized the increase count function
-    const increaseCount = useCallback((id: number) => {
+    const increaseCount = (id: number) => {
         setItems(prevItems =>
             prevItems.map(item =>
                 item.id === id && item.count < 99
@@ -51,10 +45,9 @@ const OrderContainer = () => {
                     : item
             )
         );
-    }, []);
+    };
 
-    // memoized the decrease count function
-    const decreaseCount = useCallback((id: number) => {
+    const decreaseCount = (id: number) => {
         setItems(prevItems =>
             prevItems.map(item =>
                 item.id === id && item.count > 0
@@ -62,33 +55,28 @@ const OrderContainer = () => {
                     : item
             )
         );
-    }, []);
+    };
 
-    // memoized the total price
     const totalPrice = useMemo(
         () => items.reduce((acc, item) => acc + item.price * item.count, 0),
         [items]
     );
 
-    const handleNewOrder = useCallback(() => {
+    const handleNewOrder = () => {
         setLoading(true);
         setItems([]);
         getOrderData();
-    }, [getOrderData]);
+    };
 
-    const renderShimmer = useCallback(
-        (itm: number) => (
-            <ShimmerPlaceholder
-                key={itm}
-                width={itemRowTotalWidth}
-                height={36}
-                style={styles.shimmerStyle}
-            />
-        ),
-        []
+    const renderShimmer = (itm: number) => (
+        <ShimmerPlaceholder
+            key={itm}
+            width={itemRowTotalWidth}
+            height={36}
+            style={styles.shimmerStyle}
+        />
     );
 
-    // Memoized empty list component
     const renderEmptyListComponent = useMemo(() => (
         <View style={styles.emptyListComponent}>
             <MyText style={styles.emptyListText}>Unable to fetch the data</MyText>
@@ -114,6 +102,5 @@ const OrderContainer = () => {
         </View>
     );
 };
-
 
 export default OrderContainer;
